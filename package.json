@@ -1,0 +1,16 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && ng serve",
+    "server": "cd server && npm run serve",
+    "serve": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  }
+}
