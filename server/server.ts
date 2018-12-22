@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.use(bodyParser.json());
 
-app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
+app.use(expressJwt({secret: 'docs-stored-secret'}).unless({path: ['/api/auth']}));
 
 app.post('/api/auth', function(req, res) {
     const body = req.body;
@@ -42,7 +42,7 @@ app.post('/api/auth', function(req, res) {
     const user = USERS.filter(user => user.username == body.username);
     if (user.length !== 1 || body.password != 'test') return res.sendStatus(401);
 
-    const token = jwt.sign({userID: user[0].id}, 'todo-app-super-shared-secret', {expiresIn: '2h'});
+    const token = jwt.sign({userID: user[0].id}, 'docs-stored-secret', {expiresIn: '2h'});
     res.send({token});
 });
 
