@@ -1,6 +1,8 @@
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
 // equivalent of older: const express = require('express')
 import * as express from 'express';
-
 const app = express();
 // Allow any method from any host and log requests
 app.use((req: any, res: any, next: any) => {
@@ -15,12 +17,35 @@ app.use((req: any, res: any, next: any) => {
     }
 });
 
+const USERS = [
+    { 'id': 1, 'username': 'oz' },
+];
+
+function getUsers() {
+    return USERS;
+}
+
 // Handle POST requests that come in formatted as JSON
 app.use(express.json());
 // A default hello word route
 app.get('/', (req, res) => {
     res.send({hello: 'world'});
 });
+
+app.use(bodyParser.json());
+
+app.use(expressJwt({secret: 'todo-app-super-shared-secret'}).unless({path: ['/api/auth']}));
+
+app.post('/api/auth', function(req, res) {
+    const body = req.body;
+
+    const user = USERS.filter(user => user.username == body.username);
+    if (user.length !== 1 || body.password != 'test') return res.sendStatus(401);
+
+    const token = jwt.sign({userID: user[0].id}, 'todo-app-super-shared-secret', {expiresIn: '2h'});
+    res.send({token});
+});
+
 // start our server on port 4201
 app.listen(4201, '127.0.0.1', function () {
     console.log("Server now listening on 4201");
